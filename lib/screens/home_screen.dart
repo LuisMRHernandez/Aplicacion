@@ -47,6 +47,51 @@ class _HomeScreenState extends State<HomeScreen> {
                     leading: CircleAvatar(child: Text('${sensor.row}')),
                     title: Text(sensor.id),
                     subtitle: Text('Valor: ${sensor.value} - TS: ${sensor.ts}'),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () async {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder:
+                              (ctx) => AlertDialog(
+                                title: Text('¿Eliminar Backup?'),
+                                content: Text(
+                                  '¿Estás seguro de eliminar ${sensor.id}?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    child: Text('Cancelar'),
+                                    onPressed:
+                                        () => Navigator.of(ctx).pop(false),
+                                  ),
+                                  TextButton(
+                                    child: Text('Eliminar'),
+                                    onPressed:
+                                        () => Navigator.of(ctx).pop(true),
+                                  ),
+                                ],
+                              ),
+                        );
+
+                        if (confirm == true) {
+                          try {
+                            await Provider.of<SensorProvider>(
+                              context,
+                              listen: false,
+                            ).deleteSensor(sensor.id);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Backup eliminado')),
+                            );
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Error eliminando backup'),
+                              ),
+                            );
+                          }
+                        }
+                      },
+                    ),
                   );
                 },
               ),
