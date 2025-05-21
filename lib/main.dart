@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:holamundo/screens/main_menu_screen.dart';
 import 'package:provider/provider.dart';
 import './providers/sensor_provider.dart';
 import './screens/home_screen.dart';
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Sensor App',
         theme: ThemeData(primarySwatch: Colors.teal),
-        home: HomeScreen(),
+        home: MainMenuScreen(),
       ),
     );
   }
