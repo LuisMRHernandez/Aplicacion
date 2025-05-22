@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:holamundo/screens/main_menu_screen.dart';
 import 'package:provider/provider.dart';
 import './providers/sensor_provider.dart';
-import './screens/home_screen.dart';
 
 void main() {
   runApp(MyApp());

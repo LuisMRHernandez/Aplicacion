@@ -77,9 +77,7 @@ class SensorProvider with ChangeNotifier {
   }
 
   Future<List<SensorData>> fetchSensorDataById(String sensorId) async {
-    final url = Uri.parse(
-      'http://192.168.1.3:8000/backups/get-all/?sensor_id=$sensorId',
-    );
+    final url = Uri.parse('http://192.168.1.3:8000/backups/by-id/$sensorId');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
