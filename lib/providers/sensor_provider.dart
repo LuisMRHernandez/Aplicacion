@@ -46,7 +46,7 @@ class SensorProvider with ChangeNotifier {
     try {
       final response = await http.delete(url);
       if (response.statusCode == 200) {
-        _sensors.removeWhere((sensor) => sensor.id == id);
+        _sensors.removeWhere((sensor) => sensors == id);
         notifyListeners();
       } else {
         throw Exception('Error al eliminar el sensor');

@@ -31,11 +31,12 @@ dependencies:
   flutter:
     sdk: flutter
   provider: 
-  http: 
+
+  intl: ^0.18.0 
 
   
-  
   cupertino_icons: ^1.0.8
+  http: ^1.4.0
 
 dev_dependencies:
   flutter_test:
