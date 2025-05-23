@@ -5,6 +5,9 @@ class SensorInfo {
   SensorInfo({required this.id, required this.name});
 
   factory SensorInfo.fromJson(Map<String, dynamic> json) {
-    return SensorInfo(id: json['id'], name: json['name']);
+    return SensorInfo(
+      id: json['id'].toString(),
+      name: json['name'] ?? 'Desconocido',
+    );
   }
 }

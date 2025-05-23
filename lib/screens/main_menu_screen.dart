@@ -3,8 +3,7 @@ import 'package:holamundo/screens/sensor_data_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/sensor_provider.dart';
 import '../models/sensor_info.dart';
-// Importa tu pantalla de detalle si deseas navegar luego
-// import 'sensor_detail_screen.dart';
+import '../widgets/sensor_card.dart';
 
 class MainMenuScreen extends StatefulWidget {
   @override
@@ -24,7 +23,27 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Selecciona un sensor')),
+      appBar: AppBar(
+        toolbarHeight: 120.0, //cambia la altura de imagen
+        title: Column(
+          children: [
+            Image.asset(
+              'assets/ecom.png', //
+              height: 80, // Altura de la imagen
+            ),
+            SizedBox(height: 8), // Espacio entre la imagen y el texto
+            Text(
+              'SELECCIONA UN SENSOR',
+              style: TextStyle(
+                fontSize: 20, // Aumenta el tamaño de la fuente del texto
+                fontWeight: FontWeight.bold, // Opcional: hazlo más audaz
+                color: const Color.fromARGB(255, 5, 86, 235),
+              ),
+            ),
+          ],
+        ),
+        centerTitle: true,
+      ),
       body: FutureBuilder<List<SensorInfo>>(
         future: _sensorListFuture,
         builder: (ctx, snapshot) {
@@ -42,28 +61,35 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
             return Center(child: Text('No hay sensores disponibles'));
           }
 
-          return ListView.builder(
-            itemCount: sensors.length,
-            itemBuilder: (ctx, index) {
-              final sensor = sensors[index];
-              return ListTile(
-                title: Text(sensor.name),
-                subtitle: Text('ID: ${sensor.id}'),
-                trailing: Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (ctx) => SensorDataScreen(
-                            sensorId: sensor.id,
-                            sensorName: sensor.name,
-                          ),
-                    ),
-                  );
-                },
-              );
-            },
+          return Padding(
+            padding: const EdgeInsets.all(10),
+            child: GridView.builder(
+              itemCount: sensors.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, // Tres columnas
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 0.7,
+              ),
+              itemBuilder: (ctx, index) {
+                final sensor = sensors[index];
+                return SensorCard(
+                  sensor: sensor,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (ctx) => SensorDataScreen(
+                              sensorId: sensor.id,
+                              sensorName: sensor.name,
+                            ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
           );
         },
       ),

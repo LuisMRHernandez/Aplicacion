@@ -53,13 +53,11 @@ dev_dependencies:
 
 
 flutter:
-
-  
-  
   
   uses-material-design: true
-
-  
+  # Para agregar recursos a tu aplicación, añade una sección de activos aquí, como esta:
+  assets:
+    - assets/
   
   
   
