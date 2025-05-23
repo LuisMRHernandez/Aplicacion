@@ -6,6 +6,8 @@ import '../models/sensor_info.dart';
 import '../widgets/sensor_card.dart';
 
 class MainMenuScreen extends StatefulWidget {
+  const MainMenuScreen({super.key});
+
   @override
   _MainMenuScreenState createState() => _MainMenuScreenState();
 }

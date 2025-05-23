@@ -5,7 +5,7 @@ class SensorCard extends StatelessWidget {
   final SensorInfo sensor;
   final VoidCallback onTap;
 
-  const SensorCard({required this.sensor, required this.onTap});
+  const SensorCard({super.key, required this.sensor, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

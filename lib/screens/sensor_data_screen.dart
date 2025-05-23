@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:fl_chart/fl_chart.dart';
+
 import '../providers/sensor_provider.dart';
 import '../models/sensor_data.dart';
 
@@ -7,7 +9,11 @@ class SensorDataScreen extends StatefulWidget {
   final String sensorId;
   final String sensorName;
 
-  const SensorDataScreen({required this.sensorId, required this.sensorName});
+  const SensorDataScreen({
+    super.key,
+    required this.sensorId,
+    required this.sensorName,
+  });
 
   @override
   _SensorDataScreenState createState() => _SensorDataScreenState();
@@ -22,10 +28,11 @@ class _SensorDataScreenState extends State<SensorDataScreen> {
       _isRefreshing = true;
     });
     try {
-      await Provider.of<SensorProvider>(
+      _sensorDataFuture = Provider.of<SensorProvider>(
         context,
         listen: false,
       ).fetchSensorDataById(widget.sensorId);
+      await _sensorDataFuture;
     } finally {
       setState(() {
         _isRefreshing = false;
@@ -40,6 +47,59 @@ class _SensorDataScreenState extends State<SensorDataScreen> {
       context,
       listen: false,
     ).fetchSensorDataById(widget.sensorId);
+  }
+
+  Widget buildLineChart(List<SensorData> data) {
+    if (data.length < 2) {
+      return Center(child: Text('No hay suficientes datos para graficar.'));
+    }
+
+    final List<FlSpot> spots =
+        data
+            .map((sensor) => FlSpot(sensor.ts.toDouble(), sensor.value))
+            .toList();
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: SizedBox(
+        height: 250,
+        child: LineChart(
+          LineChartData(
+            titlesData: FlTitlesData(
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  interval:
+                      (data.length > 5)
+                          ? (data.last.ts - data.first.ts) / 5
+                          : 1,
+                  getTitlesWidget: (value, meta) {
+                    final date = DateTime.fromMillisecondsSinceEpoch(
+                      value.toInt() * 1000,
+                    );
+                    return Text(
+                      '${date.hour}:${date.minute.toString().padLeft(2, '0')}',
+                      style: TextStyle(fontSize: 10),
+                    );
+                  },
+                ),
+              ),
+              leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)),
+            ),
+            borderData: FlBorderData(show: true),
+            lineBarsData: [
+              LineChartBarData(
+                spots: spots,
+                isCurved: true,
+                color: Colors.blue,
+                barWidth: 2,
+                dotData: FlDotData(show: false),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -85,33 +145,43 @@ class _SensorDataScreenState extends State<SensorDataScreen> {
               );
             }
 
-            return ListView.builder(
-              itemCount: data.length,
-              itemBuilder: (ctx, index) {
-                final sensor = data[index];
-                return Card(
-                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  elevation: 2,
-                  child: ListTile(
-                    title: Text('Valor: ${sensor.value.toStringAsFixed(2)}'),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 5),
-                        Text(
-                          'Fecha: ${sensor.formattedDate}',
-                        ), // Usamos el getter de fecha formateada
-                        Text('ID: ${sensor.sensorId}'),
-                        Text('Registro: ${sensor.row}'),
-                      ],
-                    ),
-                    trailing: Icon(Icons.chevron_right),
-                    onTap: () {
-                      // Podrías navegar a un detalle más específico si lo necesitas
+            return Column(
+              children: [
+                buildLineChart(data),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: data.length,
+                    itemBuilder: (ctx, index) {
+                      final sensor = data[index];
+                      return Card(
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        elevation: 2,
+                        child: ListTile(
+                          title: Text(
+                            'Valor: ${sensor.value.toStringAsFixed(2)}',
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 5),
+                              Text('Fecha: ${sensor.formattedDate}'),
+                              Text('ID: ${sensor.sensorId}'),
+                              Text('Registro: ${sensor.row}'),
+                            ],
+                          ),
+                          trailing: Icon(Icons.chevron_right),
+                          onTap: () {
+                            // Acción opcional
+                          },
+                        ),
+                      );
                     },
                   ),
-                );
-              },
+                ),
+              ],
             );
           },
         ),

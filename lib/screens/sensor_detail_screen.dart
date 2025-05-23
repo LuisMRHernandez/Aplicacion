@@ -6,7 +6,7 @@ import '../models/sensor_data.dart';
 class SensorDetailScreen extends StatefulWidget {
   final int rowId;
 
-  const SensorDetailScreen({required this.rowId});
+  const SensorDetailScreen({super.key, required this.rowId});
 
   @override
   _SensorDetailScreenState createState() => _SensorDetailScreenState();
