@@ -50,10 +50,6 @@ class _SensorDataScreenState extends State<SensorDataScreen> {
   }
 
   Widget buildLineChart(List<SensorData> data) {
-    if (data.length < 2) {
-      return Center(child: Text('No hay suficientes datos para graficar.'));
-    }
-
     final List<FlSpot> spots =
         data
             .map((sensor) => FlSpot(sensor.ts.toDouble(), sensor.value))
@@ -62,13 +58,19 @@ class _SensorDataScreenState extends State<SensorDataScreen> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: SizedBox(
-        height: 250,
+        height: 300, // altura fija para que Flutter sepa cómo dibujar
         child: LineChart(
           LineChartData(
             titlesData: FlTitlesData(
+              leftTitles: AxisTitles(
+                axisNameWidget: Text('Valor variable'),
+                sideTitles: SideTitles(showTitles: true),
+              ),
               bottomTitles: AxisTitles(
+                axisNameWidget: Text('Tiempo'),
                 sideTitles: SideTitles(
                   showTitles: true,
+                  reservedSize: 32,
                   interval:
                       (data.length > 5)
                           ? (data.last.ts - data.first.ts) / 5
@@ -84,15 +86,14 @@ class _SensorDataScreenState extends State<SensorDataScreen> {
                   },
                 ),
               ),
-              leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)),
             ),
             borderData: FlBorderData(show: true),
             lineBarsData: [
               LineChartBarData(
                 spots: spots,
                 isCurved: true,
-                color: Colors.blue,
-                barWidth: 2,
+                color: const Color.fromARGB(255, 243, 15, 15),
+                barWidth: 4,
                 dotData: FlDotData(show: false),
               ),
             ],
