@@ -1,6 +1,38 @@
 import 'package:flutter/material.dart';
 import '../models/sensor_info.dart';
 
+final Map<String, String> sensorImages = {
+  "11": "assets/bateria.png",
+  "12": "assets/bateria.png",
+  "13": "assets/bateria.png",
+  "14": "assets/bateria.png",
+  "15": "assets/caudal.png",
+  "16": "assets/humedad.png",
+  "17": "assets/humedad.png",
+  "21": "assets/viento.png",
+  "22": "assets/humedad.png",
+  "23": "assets/sensors/irradiancia.png",
+  "24": "assets/sensors/lluvia.png",
+  "25": "assets/sensors/temperatura_ambiente.png",
+  "26": "assets/sensors/viento.png",
+  "31": "assets/sensors/temperatura.png",
+  "32": "assets/sensors/humedad_ambiente.png",
+  "33": "assets/sensors/temperatura.png",
+  "34": "assets/sensors/humedad_suelo.png",
+  "35": "assets/sensors/temperatura.png",
+  "36": "assets/sensors/humedad_suelo.png",
+  "37": "assets/sensors/temperatura.png",
+  "38": "assets/sensors/humedad_suelo.png",
+  "39": "assets/sensors/humedad_grano.png",
+  "51": "assets/sensors/temperatura.png",
+  "52": "assets/sensors/humedad_ambiente.png",
+  "53": "assets/sensors/tanque.png",
+  "54": "assets/sensors/tanque.png",
+  "55": "assets/sensors/tanque.png",
+  "56": "assets/sensors/ph.png",
+  "57": "assets/sensors/brix.png",
+};
+
 class SensorCard extends StatelessWidget {
   final SensorInfo sensor;
   final VoidCallback onTap;
@@ -9,34 +41,31 @@ class SensorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    final imagePath = sensorImages[sensor.id] ?? "assets/sensors/default.png";
+
+    return GestureDetector(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(238, 3, 238, 247),
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 4,
-              offset: Offset(2, 2),
-            ),
-          ],
-        ),
-        padding: EdgeInsets.all(12),
+      child: Card(
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.sensors, size: 40, color: Colors.blue.shade800),
-            SizedBox(height: 8),
-            Text(
-              sensor.name,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-              textAlign: TextAlign.center,
+            Expanded(
+              flex: 6,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(imagePath, fit: BoxFit.contain),
+              ),
             ),
-            SizedBox(height: 4),
-            Text('ID: ${sensor.id}', style: TextStyle(fontSize: 12)),
+            Expanded(
+              flex: 2,
+              child: Text(
+                sensor.name,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 14),
+              ),
+            ),
           ],
         ),
       ),

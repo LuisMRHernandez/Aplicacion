@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:intl/intl.dart'; // Necesario para formatear fechas
 
 import '../providers/sensor_provider.dart';
 import '../models/sensor_data.dart';
@@ -50,56 +51,38 @@ class _SensorDataScreenState extends State<SensorDataScreen> {
   }
 
   Widget buildLineChart(List<SensorData> data) {
-    final List<FlSpot> spots =
-        data
-            .map((sensor) => FlSpot(sensor.ts.toDouble(), sensor.value))
-            .toList();
-
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: SizedBox(
-        height: 300, // altura fija para que Flutter sepa cómo dibujar
-        child: LineChart(
-          LineChartData(
-            titlesData: FlTitlesData(
-              leftTitles: AxisTitles(
-                axisNameWidget: Text('Valor variable'),
-                sideTitles: SideTitles(showTitles: true),
-              ),
-              bottomTitles: AxisTitles(
-                axisNameWidget: Text('Tiempo'),
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  reservedSize: 32,
-                  interval:
-                      (data.length > 5)
-                          ? (data.last.ts - data.first.ts) / 5
-                          : 1,
-                  getTitlesWidget: (value, meta) {
-                    final date = DateTime.fromMillisecondsSinceEpoch(
-                      value.toInt() * 1000,
-                    );
-                    return Text(
-                      '${date.hour}:${date.minute.toString().padLeft(2, '0')}',
-                      style: TextStyle(fontSize: 10),
-                    );
-                  },
-                ),
-              ),
-            ),
-            borderData: FlBorderData(show: true),
-            lineBarsData: [
-              LineChartBarData(
-                spots: spots,
-                isCurved: true,
-                color: const Color.fromARGB(255, 243, 15, 15),
-                barWidth: 4,
-                dotData: FlDotData(show: false),
-              ),
-            ],
-          ),
-        ),
+    return SfCartesianChart(
+      title: ChartTitle(text: 'Datos del Sensor'),
+      legend: Legend(isVisible: true),
+      tooltipBehavior: TooltipBehavior(enable: true),
+      zoomPanBehavior: ZoomPanBehavior(
+        enablePinching: true,
+        enablePanning: true,
+        zoomMode: ZoomMode.x,
       ),
+      primaryXAxis: DateTimeAxis(
+        title: AxisTitle(text: 'Tiempo'),
+        dateFormat: DateFormat.Hm(),
+        edgeLabelPlacement: EdgeLabelPlacement.shift,
+        intervalType: DateTimeIntervalType.minutes,
+      ),
+      primaryYAxis: NumericAxis(
+        title: AxisTitle(text: 'Valor'),
+        labelFormat: '{value}',
+      ),
+      series: <LineSeries<SensorData, DateTime>>[
+        LineSeries<SensorData, DateTime>(
+          name: 'Lectura',
+          dataSource: data,
+          xValueMapper:
+              (SensorData sensor, _) =>
+                  DateTime.fromMillisecondsSinceEpoch(sensor.ts * 1000),
+          yValueMapper: (SensorData sensor, _) => sensor.value,
+          markerSettings: const MarkerSettings(isVisible: true),
+          dataLabelSettings: const DataLabelSettings(isVisible: false),
+          enableTooltip: true,
+        ),
+      ],
     );
   }
 
@@ -148,35 +131,30 @@ class _SensorDataScreenState extends State<SensorDataScreen> {
 
             return Column(
               children: [
-                buildLineChart(data),
                 Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: buildLineChart(data),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
                   child: ListView.builder(
                     itemCount: data.length,
                     itemBuilder: (ctx, index) {
                       final sensor = data[index];
-                      return Card(
-                        margin: EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
+                      return ListTile(
+                        title: Text(
+                          'Valor: ${sensor.value.toStringAsFixed(2)}',
                         ),
-                        elevation: 2,
-                        child: ListTile(
-                          title: Text(
-                            'Valor: ${sensor.value.toStringAsFixed(2)}',
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(height: 5),
-                              Text('Fecha: ${sensor.formattedDate}'),
-                              Text('ID: ${sensor.sensorId}'),
-                              Text('Registro: ${sensor.row}'),
-                            ],
-                          ),
-                          trailing: Icon(Icons.chevron_right),
-                          onTap: () {
-                            // Acción opcional
-                          },
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Fecha: ${sensor.formattedDate}'),
+                            Text('ID: ${sensor.sensorId}'),
+                            Text('Registro: ${sensor.row}'),
+                          ],
                         ),
                       );
                     },
