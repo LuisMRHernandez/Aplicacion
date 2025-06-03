@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart'; // Necesario para formatear fechas
-
 import '../providers/sensor_provider.dart';
 import '../models/sensor_data.dart';
 
