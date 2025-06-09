@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:holamundo/screens/filtered_sensor_list_screen.dart';
+import 'package:Ecomindala/screens/filtered_sensor_list_screen.dart';
 
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({super.key});
@@ -41,7 +41,7 @@ class MainMenuScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 5, 86, 235),
+                color: Color.fromARGB(110, 139, 119, 2),
               ),
             ),
           ],

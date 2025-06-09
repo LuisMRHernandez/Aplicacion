@@ -91,4 +91,6 @@ class SensorProvider with ChangeNotifier {
       return [];
     }
   }
+
+  static getSensorData(String sensorId) {}
 }

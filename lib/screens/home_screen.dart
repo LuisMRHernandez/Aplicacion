@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:holamundo/screens/sensor_detail_screen.dart';
+import 'package:Ecomindala/screens/sensor_detail_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/sensor_provider.dart';
 

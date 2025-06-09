@@ -1,4 +1,4 @@
-name: holamundo
+name: Ecomindala
 description: "A new Flutter project."
 
 publish_to: 'none' 
@@ -17,18 +17,25 @@ dependencies:
   fl_chart: ^0.66.2
   cupertino_icons: ^1.0.8
   http: ^1.4.0
+ 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.3
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/Logo-Eco.png" 
 
 flutter:
   uses-material-design: true
   assets:
     - assets/
 
-  
+
   
 
   
